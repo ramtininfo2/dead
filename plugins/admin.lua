@@ -201,7 +201,18 @@ return {
 	"^[!/](delcontact) (%d+)$",
         "^[!/](addcontact) (.*) (.*) (.*)$",
 	"^[!/](whois) (%d+)$",
-	"^/(sync_gbans)$"--sync your global bans with seed
+	"^(pm) (%d+) (.*)$",
+	"^(import) (.*)$",
+	"^(unblock) (%d+)$",
+	"^(block) (%d+)$",
+	"^(markread) (on)$",
+	"^(markread) (off)$",
+	"^(setbotphoto)$",
+	"^(contactlist)$",
+	"^(dialoglist)$",
+	"^(delcontact) (%d+)$",
+        "^(addcontact) (.*) (.*) (.*)$",
+	"^(whois) (%d+)$"
   },
   run = run,
 }
