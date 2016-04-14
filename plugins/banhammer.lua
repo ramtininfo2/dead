@@ -36,18 +36,16 @@ local function pre_process(msg)
           end
         end
       end
-     if data[tostring(msg.to.id)] then
-       if data[tostring(msg.to.id)]['settings'] then
-         if data[tostring(msg.to.id)]['settings']['lock_bots'] then 
-           bots_protection = data[tostring(msg.to.id)]['settings']['lock_bots']
-          end
-        end
+     local bots_protection = "Yes"
+      local data = load_data(_config.moderation.data)
+      if data[tostring(msg.to.id)]['settings']['lock_bots'] then
+        bots_protection = data[tostring(msg.to.id)]['settings']['lock_bots']
       end
     if msg.action.user.username ~= nil then
-      if string.sub(msg.action.user.username:lower(), -3) == 'bot' and not is_momod(msg) and bots_protection == "yes" then --- Will kick bots added by normal users
+      if string.sub(msg.action.user.username:lower(), -3) == 'bot' and not is_admin(msg) and bots_protection == "yes" then --- Will kick bots added by normal users
         local name = user_print_name(msg.from)
-          savelog(msg.to.id, name.." ["..msg.from.id.."] added a bot > @".. msg.action.user.username)-- Save to logs
           kick_user(msg.action.user.id, msg.to.id)
+          ban_user(msg.action.user.id, msg.to.id)
       end
     end
   end
