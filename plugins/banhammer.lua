@@ -1,15 +1,11 @@
-
 local function pre_process(msg)
-  -- SERVICE MESSAGE
   if msg.action and msg.action.type then
     local action = msg.action.type
     -- Check if banned user joins chat by link
     if action == 'chat_add_user_link' then
       local user_id = msg.from.id
-      print('Checking invited user '..user_id)
       local banned = is_banned(user_id, msg.to.id)
-      if banned or is_gbanned(user_id) then -- Check it with redis
-      print('User is banned!')
+      if banned or is_gbanned(user_id) then
       local name = user_print_name(msg.from)
       savelog(msg.to.id, name.." ["..msg.from.id.."] is banned and kicked ! ")-- Save to logs
       kick_user(user_id, msg.to.id)
@@ -29,11 +25,11 @@ local function pre_process(msg)
         redis:incr(banhash)
         local banhash = 'addedbanuser:'..msg.to.id..':'..msg.from.id
         local banaddredis = redis:get(banhash) 
-        if banaddredis then 
-          if tonumber(banaddredis) == 4 and not is_owner(msg) then 
+        if banaddredis then
+          if tonumber(banaddredis) == 2 and not is_owner(msg) then
             kick_user(msg.from.id, msg.to.id)-- Kick user who adds ban ppl more than 3 times
           end
-          if tonumber(banaddredis) ==  8 and not is_owner(msg) then 
+          if tonumber(banaddredis) == 3 and not is_owner(msg) then 
             ban_user(msg.from.id, msg.to.id)-- Kick user who adds ban ppl more than 7 times
             local banhash = 'addedbanuser:'..msg.to.id..':'..msg.from.id
             redis:set(banhash, 0)-- Reset the Counter
@@ -63,10 +59,10 @@ local function pre_process(msg)
     local data = load_data(_config.moderation.data)
     local group = msg.to.id
     local texttext = 'groups'
-    --if not data[tostring(texttext)][tostring(msg.to.id)] and not is_realm(msg) then -- Check if this group is one of my groups or not
-    --chat_del_user('chat#id'..msg.to.id,'user#id'..our_id,ok_cb,false)
-    --return 
-    --end
+    if not data[tostring(texttext)][tostring(msg.to.id)] and not is_realm(msg) then -- Check if this group is one of my groups or not
+    chat_del_user('chat#id'..msg.to.id,'user#id'..our_id,ok_cb,false)
+    return 
+    end
     local user_id = msg.from.id
     local chat_id = msg.to.id
     local banned = is_banned(user_id, chat_id)
@@ -112,7 +108,8 @@ local function kick_ban_res(extra, success, result)
         return 'User '..user_id..' unbanned'
       elseif get_cmd == 'banall' then
         send_large_msg(receiver, 'User @'..member..' ['..member_id..'] globally banned')
-        return banall_user(member_id, chat_id)
+        return banall_user(member_id, chat_id),
+               kick_user(member_id, chat_id)
       elseif get_cmd == 'unbanall' then
         send_large_msg(receiver, 'User @'..member..' ['..member_id..'] un-globally banned')
         return unbanall_user(member_id, chat_id)
@@ -323,6 +320,21 @@ return {
     "^[!/]([Bb]an)$",
     "^[!/]([Uu]nban)$",
     "^[!/]([Ii]d)$",
+    "^([Bb]anall) (.*)$",
+    "^([Bb]anall)$",
+    "^([Bb]anlist) (.*)$",
+    "^([Bb]anlist)$",
+    "^([Gg]banlist)$",
+    "^([Bb]an) (.*)$",
+    "^([Kk]ick)$",
+    "^([Uu]nban) (.*)$",
+    "^([Uu]nbanall) (.*)$",
+    "^([Uu]nbanall)$",
+    "^([Kk]ick) (.*)$",
+    "^([Kk]ickme)$",
+    "^([Bb]an)$",
+    "^([Uu]nban)$",
+    "^([Ii]d)$",
     "^!!tgservice (.+)$"
   },
   run = run,
