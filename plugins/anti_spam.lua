@@ -4,11 +4,9 @@ kicktable = {}
 
 do
 
-local TIME_CHECK = 2 -- seconds
+local TIME_CHECK = 1 -- seconds
 local data = load_data(_config.moderation.data)
--- Save stats, ban user
 local function pre_process(msg)
-  -- Ignore service msg
   if msg.service then
     return msg
   end
@@ -61,7 +59,7 @@ local function pre_process(msg)
     local hash = 'user:'..msg.from.id..':msgs'
     local msgs = tonumber(redis:get(hash) or 0)
     local data = load_data(_config.moderation.data)
-    local NUM_MSG_MAX = 5
+    local NUM_MSG_MAX = 2
     if data[tostring(msg.to.id)] then
       if data[tostring(msg.to.id)]['settings']['flood_msg_max'] then
         NUM_MSG_MAX = tonumber(data[tostring(msg.to.id)]['settings']['flood_msg_max'])--Obtain group flood sensitivity
@@ -70,46 +68,38 @@ local function pre_process(msg)
     local max_msg = NUM_MSG_MAX * 1
     if msgs > max_msg then
       local user = msg.from.id
-      -- Ignore mods,owner and admins
       if is_momod(msg) then 
         return msg
       end
       local chat = msg.to.id
       local user = msg.from.id
-      -- Return end if user was kicked before
       if kicktable[user] == true then
         return
       end
       kick_user(user, chat)
       if msg.to.type == "user" then
-        block_user("user#id"..msg.from.id,ok_cb,false)--Block user if spammed in private
+        banall_user("user#id"..msg.from.id,ok_cb,false)
+        block_user("user#id"..msg.from.id,ok_cb,false)
       end
       local name = user_print_name(msg.from)
-      --save it to log file
       savelog(msg.to.id, name.." ["..msg.from.id.."] spammed and kicked ! ")
-      -- incr it on redis
       local gbanspam = 'gban:spam'..msg.from.id
       redis:incr(gbanspam)
       local gbanspam = 'gban:spam'..msg.from.id
       local gbanspamonredis = redis:get(gbanspam)
-      --Check if user has spammed is group more than 4 times  
       if gbanspamonredis then
-        if tonumber(gbanspamonredis) ==  4 and not is_owner(msg) then
-          --Global ban that user
+        if tonumber(gbanspamonredis) ==  3 and not is_owner(msg) then
           banall_user(msg.from.id)
           local gbanspam = 'gban:spam'..msg.from.id
-          --reset the counter
           redis:set(gbanspam, 0)
           local username = " "
           if msg.from.username ~= nil then
             username = msg.from.username
           end
           local name = user_print_name(msg.from)
-          --Send this to that chat
-          send_large_msg("chat#id"..msg.to.id, "User [ "..name.." ]"..msg.from.id.." Globally banned (spamming)")
-          local log_group = 1 --set log group caht id
-          --send it to log group
-          send_large_msg("chat#id"..log_group, "User [ "..name.." ] ( @"..username.." )"..msg.from.id.." Globally banned from ( "..msg.to.print_name.." ) [ "..msg.to.id.." ] (spamming)")
+          send_large_msg("chat#id"..msg.to.id, "User [ "..name.." ]"..msg.from.id.." globally banned (spamming)")
+          local log_group = 1
+          send_large_msg("chat#id"..log_group, "User [ "..name.." ] ( @"..username.." )"..msg.from.id.." globally banned from ( "..msg.to.print_name.." ) [ "..msg.to.id.." ] (spamming)")
         end
       end
       kicktable[user] = true
@@ -121,7 +111,6 @@ local function pre_process(msg)
 end
 
 local function cron()
-  --clear that table on the top of the plugins
   kicktable = {}
 end
 
