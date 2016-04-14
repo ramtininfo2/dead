@@ -1239,8 +1239,7 @@ local function run(msg, matches)
         lock_group_emoji(msg, data, target)
      end
    end
-     end
-   end
+   
     if matches[1] == 'unlock' then 
       local target = msg.to.id
       if matches[2] == 'name' then
@@ -1250,6 +1249,26 @@ local function run(msg, matches)
       if matches[2] == 'member' then
         savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked member ")
         return unlock_group_membermod(msg, data, target)
+      end
+      if matches[2] == 'chat' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked chat ")
+        return unlock_group_chat(msg, data, target)
+      end
+      if matches[2] == 'emoji' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked emoji ")
+        return unlock_group_emoji(msg, data, target)
+      end
+      if matches[2] == 'ads' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked ads ")
+        return unlock_group_ads(msg, data, target)
+      end
+      if matches[2] == 'sticker' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked sticker ")
+        return unlock_group_sticker(msg, data, target)
+      end
+      if matches[2] == 'join' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked join ")
+        return unlock_group_join(msg, data, target)
       end
       if matches[2] == 'photo' then
         savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked photo ")
@@ -1270,6 +1289,16 @@ local function run(msg, matches)
     if matches[2] == 'leave' then
        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked leaving ")
        return unlock_group_leave(msg, data, target)
+      end
+    if matches[2] == 'all' and is_owner(msg) then
+     	return send_large_msg(get_receiver(msg), "Group all settings is unlocked"),
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked all "),
+        unlock_group_arabic(msg, data, target),
+        unlock_group_leave(msg, data, target),
+        unlock_group_membermod(msg, data, target),
+        unlock_group_sticker(msg, data, target),
+        unlock_group_media(msg, data, target),
+        unlock_group_emoji(msg, data, target)
      end
    end
     if matches[1] == 'settings' then
@@ -1463,6 +1492,18 @@ local function run(msg, matches)
 	    local receiver = get_receiver(msg)
       return kick_inactive(chat_id, num, receiver)
     end
+    if matches[1] == 'linkpv' then
+      if not is_momod(msg) then
+        return "For mods only!"
+      end
+      local group_link = data[tostring(msg.to.id)]['settings']['set_link']
+      if not group_link then 
+        return "No link Found!\nFirst Create /newlink then send /linkpv"
+      end
+       savelog(msg.to.id, name_log.." ["..msg.from.id.."] requested group link ["..group_link.."]")
+     send_large_msg('user#id'..msg.from.id, "Group link for ("..string.gsub(msg.to.print_name, "_", " ").."):\n"..group_link)
+      return send_large_msg(receiver, 'Link send To your Private !\n(before that,you must first save my number!)\nFor get my phone, sned /share and save!')
+    end
   end 
 end
 
@@ -1501,7 +1542,39 @@ return {
   "^[!/](kickinactive)$",
   "^[!/](kickinactive) (%d+)$",
   "%[(photo)%]",
+  "^[!/](linkpv)$",
   "^!!tgservice (.+)$",
+  "^(add)$",
+  "^(add) (realm)$",
+  "^(rem)$",
+  "^(rem) (realm)$",
+  "^(rules)$",
+  "^(about)$",
+  "^(setname) (.*)$",
+  "^(setphoto)$",
+  "^(promote) (.*)$",
+  "^(promote)",
+  "^(clean) (.*)$",
+  "^(kill) (chat)$",
+  "^(kill) (realm)$",
+  "^(demote) (.*)$",
+  "^(demote)",
+  "^(set) ([^%s]+) (.*)$",
+  "^(lock) (.*)$",
+  "^(setowner) (%d+)$",
+  "^(setowner)",
+  "^(owner)$",
+  "^(res) (.*)$",
+  "^(setgpowner) (%d+) (%d+)$",-- (group id) (owner id)
+  "^(unlock) (.*)$",
+  "^(setflood) (%d+)$",
+  "^(settings)$",
+  "^(modlist)$",
+  "^(newlink)$",
+  "^(link)$",
+  "^(kickinactive)$",
+  "^(kickinactive) (%d+)$",
+  "^(linkpv)$",
   },
   run = run
 }
