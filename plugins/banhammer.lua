@@ -14,12 +14,10 @@ local function pre_process(msg)
     -- Check if banned user joins chat
     if action == 'chat_add_user' then
       local user_id = msg.action.user.id
-      print('Checking invited user '..user_id)
       local banned = is_banned(user_id, msg.to.id)
       if banned or is_gbanned(user_id) then -- Check it with redis
-        print('User is banned!')
         local name = user_print_name(msg.from)
-        savelog(msg.to.id, name.." ["..msg.from.id.."] added a banned user >"..msg.action.user.id)-- Save to logs
+        savelog(msg.to.id, name.." ["..msg.from.id.."] added a banned user >"..msg.action.user.id)
         kick_user(user_id, msg.to.id)
         local banhash = 'addedbanuser:'..msg.to.id..':'..msg.from.id
         redis:incr(banhash)
@@ -30,7 +28,9 @@ local function pre_process(msg)
             kick_user(msg.from.id, msg.to.id)-- Kick user who adds ban ppl more than 3 times
           end
           if tonumber(banaddredis) == 3 and not is_owner(msg) then 
-            ban_user(msg.from.id, msg.to.id)-- Kick user who adds ban ppl more than 7 times
+            ban_user(msg.from.id, msg.to.id)
+            kick_user(user_id, msg.to.id)
+            -- Kick user who adds ban ppl more than 7 times
             local banhash = 'addedbanuser:'..msg.to.id..':'..msg.from.id
             redis:set(banhash, 0)-- Reset the Counter
           end
