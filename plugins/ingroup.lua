@@ -1246,6 +1246,10 @@ local function run(msg, matches)
         savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked name ")
         return unlock_group_namemod(msg, data, target)
       end
+      if matches[2] == 'media' then
+        savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked name ")
+        return unlock_group_namemod(msg, data, target)
+      end
       if matches[2] == 'member' then
         savelog(msg.to.id, name_log.." ["..msg.from.id.."] unlocked member ")
         return unlock_group_membermod(msg, data, target)
