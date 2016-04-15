@@ -8,6 +8,7 @@ local data = load_data(_config.moderation.data)
          if not is_momod(msg) and not is_banned(msg) and not is_gbanned(msg) then
         kick_user(user_id, msg.to.id)
      send_large_msg(get_receiver(msg), "Member join is lock!")
+               end
             end
           end
        end   
