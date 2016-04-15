@@ -68,6 +68,7 @@ local function run(msg, matches)
      if matches[1] == 'chatlist'then
        if is_admin(msg) and msg.to.type == 'chat' then
          send_document("chat#id"..msg.from.id, "./groups/lists/listed_groups.txt", ok_cb, false)
+                end
          end
       end
   end
@@ -82,7 +83,7 @@ return {
       "^(chatlist)$",
       "^(join) (.*)$",
       "^(kikme) (.*)$",
-      "^!!tgservice (chat_add_user)$"
+      "^!!tgservice (chat_add_user)$",
     },
     run = run,
 }
