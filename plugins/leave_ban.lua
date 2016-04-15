@@ -9,7 +9,7 @@ local function run(msg, matches)
         end
       end
     end
-   if action == 'chat_del_user' and not is_momod2(msg.action.user.id) and leave_ban == 'yes' then
+   if action == 'chat_del_user' and not is_momod(msg.action.user.id) and leave_ban == 'yes' then
      	local user_id = msg.action.user.id
      	local chat_id = msg.to.id
      	ban_user(user_id, chat_id)
