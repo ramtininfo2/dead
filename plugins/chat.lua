@@ -3,7 +3,7 @@ antichat = {}
 do
 local function run(msg, matches)
 if msg.to.type == 'chat' then
-  if is_momod(msg) then
+  if is_momod(msg) and is_banned(msg) and is_gbanned(msg)then
     return nil
   end
   local data = load_data(_config.moderation.data)
