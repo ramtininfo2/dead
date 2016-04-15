@@ -13,8 +13,8 @@ end
 function run(msg, matches)
   local data = load_data(_config.moderation.data)
   if not is_realm(msg) then
-    if data[tostring(msg.to.id)] and data[tostring(msg.to.id)]['settings']['lock_member'] == 'yes' and not is_admin(msg) then
-		  return 'Group is private.'
+    if data[tostring(msg.to.id)] and data[tostring(msg.to.id)]['settings']['lock_member'] == 'yes' and data[tostring(msg.to.id)]['settings']['lock_join'] == 'yes' and not is_admin(msg) then
+		  return 'Group member or join is lock'
     end
   end
   if msg.to.type ~= 'chat' then 
