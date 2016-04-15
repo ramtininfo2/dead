@@ -569,7 +569,7 @@ local function lock_group_membermod(msg, data, target)
     save_data(_config.moderation.data, data)
   end
   return 'Group members has been locked'
-enn
+end
 local function unlock_group_membermod(msg, data, target)
   if not is_momod(msg) then
     return "For moderators only!"
