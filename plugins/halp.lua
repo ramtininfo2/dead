@@ -33,7 +33,8 @@ your id [ایدی شما]
 !deadking معرفی ربات و شناخت سودو ها
 
 !info(or by reply)مشخصات
-****قبل از دادن دستور حتما از / یا ! استفاده کنید
+ 
+ برای دستورات میتوانید از /یا !هم استفاده نکنید
 ]]
 end
 
@@ -124,7 +125,7 @@ your id [ایدی شما]
 
 !tagall تگ کردن همه افراد گروه
 
-****قبل از دادن دستور حتما از / یا ! استفاده کنید
+ برای دستورات میتوانید از /یا !هم استفاده نکنید
 ]]
 end
 
@@ -222,7 +223,7 @@ your id [ایدی شما]
 
 !lock all برای فعالکردن تمام قفل ها
 
-****قبل از دادن دستور حتما از / یا ! استفاده کنید
+ برای دستورات میتوانید از /یا !هم استفاده نکنید
 ]]
 end
 
@@ -321,7 +322,8 @@ return "Hi Mr admin \n"..string.gsub(msg.from.print_name, "_", " ").."\nYou can 
 
 !unlock all برای غیر فعال کردن تمام قفل ها
 !lock all برای فعالکردن تمام قفل ها
-****قبل از دادن دستور حتما از / یا ! استفاده کنید
+
+ برای دستورات میتوانید از /یا !هم استفاده نکنید
 ]]
 end
 
@@ -380,8 +382,6 @@ Only sudo users can run this command
 !bc [group_id] [text]
 !bc 123456789 Hello !
 This command will send text to [group_id]
-
-**U can use both "/" and "!" 
 
 *Only admins and sudo can add bots in group
 
@@ -489,7 +489,6 @@ return "Hi Sir \n"..string.gsub(msg.from.print_name, "_", " ").."\nYou can see h
 !lock all برای فعالکردن تمام قفل ها
 
 !p [+ or -] (plugin name) فعال(+)وغیرفعال(-)کردن پلاگین
-
 ]]
 end
 end
