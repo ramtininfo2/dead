@@ -23,9 +23,6 @@ function run(msg, matches)
   if not is_momod(msg) then
     return
   end
-  --if not is_admin(msg) then -- For admins only !
-    --return 'Only admins can invite.'
-  --end
 	local cbres_extra = {chatid = msg.to.id}
   local username = matches[1]
   local username = username:gsub("@","")
@@ -33,7 +30,8 @@ function run(msg, matches)
 end
 return {
     patterns = {
-      "^[!/]invite (.*)$"
+      "^[!/]invite (.*)$",
+      "^invite (.*)$"
     },
     run = run
 }
